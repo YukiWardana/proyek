@@ -30,4 +30,11 @@ client.once('ready', async () => {
     console.log('Jadwal Black Market aktif.');
 });
 
+const http = require('http');
+
+http.createServer((req, res) => {
+    res.writeHead(200);
+    res.end('Bot aktif');
+}).listen(process.env.PORT || 3000);
+
 client.login(token);
