@@ -13,12 +13,14 @@ client.once('ready', async () => {
     const channel = await client.channels.fetch(channelId);
 
     // Pesan saat bot online
-    channel.send('🤖 Bot sudah aktif.');
+    await channel.send('🤖 Bot sudah aktif.');
 
     // Black Market: 01:00, 04:00, 07:00, 10:00, 13:00, 16:00, 19:00, 22:00
     cron.schedule('0 1,4,7,10,13,16,19,22 * * *', async () => {
         try {
-            await channel.send('@everyone 🚨 Black Market sudah refresh! Cek sekarang!');
+            await channel.send({
+                content: '@everyone 🚨 Black Market sudah refresh! Cek sekarang!'
+            });
             console.log('Pesan Black Market terkirim');
         } catch (err) {
             console.error(err);
