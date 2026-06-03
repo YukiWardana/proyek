@@ -15,7 +15,9 @@ client.once('ready', async () => {
 
     await channel.send('🤖 Bot sudah aktif.');
 
-    cron.schedule('0 1,4,7,10,13,16,19,22 * * *', async () => {
+    cron.schedule(
+    '0 1,4,7,10,13,16,19,22 * * *',
+    async () => {
         try {
             await channel.send({
                 content: '@everyone 🚨 Black Market sudah refresh! Cek sekarang!'
@@ -25,7 +27,11 @@ client.once('ready', async () => {
         } catch (err) {
             console.error('CRON ERROR:', err);
         }
-    });
+    },
+    {
+        timezone: 'Asia/Jakarta'
+    }
+);
 
     // TEST tiap menit
     cron.schedule('* * * * *', () => {
