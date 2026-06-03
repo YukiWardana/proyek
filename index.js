@@ -8,57 +8,66 @@ const client = new Client({
     intents: [GatewayIntentBits.Guilds]
 });
 
-client.once('ready', async () => {
+client.once('clientReady', async () => {
     console.log(`Bot online sebagai ${client.user.tag}`);
 
     const channel = await client.channels.fetch(channelId);
 
     await channel.send('🤖 Bot sudah aktif.');
 
+    // Black Market
     cron.schedule(
-    '0 1,4,7,10,13,16,19,22 * * *',
-    async () => {
-        try {
-            await channel.send({
-                content: '@everyone 🚨 Black Market sudah refresh! Cek sekarang!'
-            });
+        '0 1,4,7,10,13,16,19,22 * * *',
+        async () => {
+            try {
+                await channel.send({
+                    content: '@everyone 🚨 Black Market sudah refresh! Cek sekarang!'
+                });
 
-            console.log('Pesan Black Market terkirim');
-        } catch (err) {
-            console.error('CRON ERROR:', err);
+                console.log('Pesan Black Market terkirim');
+            } catch (err) {
+                console.error('CRON ERROR:', err);
+            }
+        },
+        {
+            timezone: 'Asia/Jakarta'
         }
-    },
-    {
-        timezone: 'Asia/Jakarta'
-    }
-);
-
-    // TEST tiap menit
-    cron.schedule('* * * * *', () => {
-        console.log('Bot masih hidup:', new Date().toISOString());
-    });
+    );
 
     console.log('Jadwal Black Market aktif.');
 });
 
-client.on('error', console.error);
-
-client.on('disconnect', () => {
-    console.log('Discord disconnect');
+// Debug Discord
+client.on('shardDisconnect', (event, id) => {
+    console.log(`Shard ${id} disconnect. Code: ${event?.code}`);
 });
 
-process.on('unhandledRejection', (reason) => {
-    console.error('UNHANDLED REJECTION:', reason);
+client.on('shardReconnecting', (id) => {
+    console.log(`Shard ${id} reconnecting`);
 });
 
-process.on('uncaughtException', (err) => {
-    console.error('UNCAUGHT EXCEPTION:', err);
+client.on('shardResume', (id, replayed) => {
+    console.log(`Shard ${id} resumed. Replayed: ${replayed}`);
 });
 
-process.on('exit', (code) => {
-    console.log(`Process exit dengan code ${code}`);
+client.on('shardError', (err) => {
+    console.error('Shard Error:', err);
 });
 
+// Status tiap menit
+setInterval(() => {
+    console.log(
+        'Discord Status:',
+        client.ws.status,
+        'Ping:',
+        client.ws.ping
+    );
+}, 60000);
+
+process.on('unhandledRejection', console.error);
+process.on('uncaughtException', console.error);
+
+// Web server untuk Render
 http.createServer((req, res) => {
     res.writeHead(200);
     res.end('Bot aktif');
