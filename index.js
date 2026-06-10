@@ -1,5 +1,6 @@
 const token = process.env.DISCORD_TOKEN;
 const channelId = process.env.CHANNEL_ID;
+
 const { Client, GatewayIntentBits } = require('discord.js');
 const cron = require('node-cron');
 const http = require('http');
